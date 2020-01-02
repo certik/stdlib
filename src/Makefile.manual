@@ -1,6 +1,7 @@
 OBJS = stdlib_experimental_ascii.o \
        stdlib_experimental_error.o \
        stdlib_experimental_io.o \
+	   f18estop.o
 
 .PHONY: all clean
 .SUFFIXES: .f90 .o
