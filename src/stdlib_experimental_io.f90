@@ -3,7 +3,11 @@ use iso_fortran_env, only: sp=>real32, dp=>real64, qp=>real128
 use stdlib_experimental_error, only: error_stop
 implicit none
 private
+! Public API
 public :: loadtxt, savetxt, open
+
+! Private API that is exposed so that we can test it in tests
+public :: parse_mode
 
 interface loadtxt
     module procedure sloadtxt
@@ -268,6 +272,35 @@ else
     whitechar = .false.
 end if
 end function
+
+logical function parse_mode(mode_, rwa, binary) result(status)
+! rwa = 1 read
+! rwa = 2 write
+! rwa = 3 append
+! binary = .true. / .false.
+character(*), intent(in) :: mode_
+integer, intent(out) :: rwa
+logical, intent(out) :: binary
+status = .true.
+rwa = 1
+binary = .false.
+if (len(mode_) == 0) return
+call assert(len(mode_) >= 1)
+if (mode_(1) == 'r') then
+    rwa = 1
+    return
+else if (mode_(1) == 'w') then
+    rwa = 2
+    return
+else if (mode_(1) == 'a') then
+    rwa = 3
+    return
+else
+    status = .false.
+    return
+end if
+end function
+
 
 integer function open(filename, mode) result(u)
 ! Open a file

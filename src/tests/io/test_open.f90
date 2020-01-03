@@ -1,5 +1,5 @@
 program test_open
-use stdlib_experimental_io, only: open
+use stdlib_experimental_io, only: open, parse_mode
 use stdlib_experimental_error, only: assert
 implicit none
 
@@ -7,6 +7,8 @@ character(:), allocatable :: filename
 integer :: u, a(3)
 
 filename = get_outpath() // "/io_open.dat"
+
+call test_parse_mode()
 
 ! Test mode "w"
 u = open(filename, "w")
@@ -45,5 +47,12 @@ contains
         outpath = '.'
     endif
     end function get_outpath
+
+    subroutine test_parse_mode()
+    logical :: r
+    r = .false.
+    call assert(parse_mode("", r))
+    call assert(r)
+    end subroutine
 
 end program
